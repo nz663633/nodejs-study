@@ -1,3 +1,8 @@
-# nodejs-study
+## nodejs-study
 
 A study repository for learning Node.js through lectures and practice.
+
+
+### Goal
+- Understand Node.js fundamentals
+- Practice backend development with Node.js
