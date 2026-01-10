@@ -1,4 +1,5 @@
 // 선언하지 않았지만 노드에서 require() 제공
+// require은 다른 파일(모듈)을 불러오고 그 파일의 module.exports를 반환
 const { odd, even } = require('./var.js'); // 구조분해 할당
 
 function checkOddOrEven(number) {
