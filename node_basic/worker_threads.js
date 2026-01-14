@@ -1,6 +1,7 @@
 // worker_threads 멀티 스레드 사용
-
+const { stat } = require('fs');
 const { start } = require('repl');
+const { WASI } = require('wasi');
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 
 if (isMainThread) { // 메인스레드
