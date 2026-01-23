@@ -1,0 +1,12 @@
+{
+  "name": "npmtest-4040",
+  "version": "0.0.1",
+  "description": "hello package.json",
+  "license": "MIT",
+  "author": "Sim hyeonji",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
