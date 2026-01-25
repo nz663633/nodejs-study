@@ -2,6 +2,7 @@
 
 const express = require('express');
 const path = require('path');
+
 const app = express();
 
 app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
@@ -13,7 +14,7 @@ app.use('/', (req, res, next) => { // 미들웨어(요청과 응답 사이에서
     console.log('모든 요청에 실행하고 싶어요!');
     next(); // 다음 미들웨어 또는 라우트 핸들러로 요청을 넘김, 호출하지 않으면 응답 안 넘어감
 })
-
+;
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './index.html'));
 });
@@ -34,6 +35,15 @@ app.get('/category/:name', (req, res) => { // 라우트 매개변수 사용(URL 
 app.get('/about', (req, res) => {
     res.send('hello express');
 });
+
+app.use((req, res, next) => { // 404처리 미들웨어
+    res.status(404).send('404지롱~')
+})
+
+app.use((err, req, res, next) => { // 에러처리 미들웨어(반드시 변수 4개!!!)
+    console.error(err);
+    res.end('에러났지롱~ 근데 안알려줄거라룽~')
+})
 
 app.listen(app.get('port'), () => { // 실제로 포트를 열어서 서버 시작
     console.log('익스프레스 서버 실행');
