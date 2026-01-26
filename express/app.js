@@ -2,6 +2,8 @@
 
 const express = require('express');
 const path = require('path');
+const morgan = require('morgan'); // 요청과 응답을 기록
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -10,18 +12,35 @@ app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
 // process.env.PORT || 3000 : 값 역할
 // process.env.PORT : 서버 환경에서 미리 정해준 포트 번호
 
+app.use(morgan('combined')); // dev보다 더 자세한 기록을 보여줌
+app.use(cookieParser('hyeonjiSim')); // 알아서 cookie를 파싱해줌(괄호에는 암호삽입)
+app.use(express.json()); // JSON 요청 바디 파싱
+app.use(express.urlencoded({ extended: true })); // HTML form 전송 데이터 파싱(파일이나 이미지 X)
+
 app.use('/', (req, res, next) => { // 미들웨어(요청과 응답 사이에서 공통 로직 처리)
     console.log('모든 요청에 실행하고 싶어요!');
     next(); // 다음 미들웨어 또는 라우트 핸들러로 요청을 넘김, 호출하지 않으면 응답 안 넘어감
 }, (req, res, next) => {
     try {
-    console.log(asdfkldsaP); // undefined(에러)
-} catch(error) { // 에러처리 미들웨어로 이동
-    next(error);
-}
+        console.log(asdfkldsaP); // undefined(에러)
+    } catch (error) { // 에러처리 미들웨어로 바로 이동
+        next(error); // 남은 일반 미들웨어, 라우트 전부 건너뜀
+    }
 });
 
 app.get('/', (req, res) => {
+    req.cookies // { mycookie: 'test' }
+    req.signedCookies; // 암호화된 쿠키
+    res.cookie('name', encodeURIComponent(name), {
+        expires: new Date(),
+        httpOnly: true,
+        path: '/',
+    })
+    res.clearCookie('name', encodeURIComponent(name), {
+        httpOnly: true,
+        path: '/',
+    })
+    req.body.name;
     res.sendFile(path.join(__dirname, './index.html'));
 }, (req, res, next) => {
     next('route'); // 다음 라우터로 넘어감
@@ -29,8 +48,9 @@ app.get('/', (req, res) => {
     console.log('실행되나요?'); // 실행 안됨
 });
 
-app.get('/', (req, res) => { // next('route')로 인해 실행됨
+app.get('/', (req, res, next) => { // next('route')로 인해 실행됨
     console.log('실행되지롱~');
+    next();
 })
 
 app.post('/', (req, res) => { // if문을 쓰지 않아도 분기 처리됨
@@ -57,7 +77,7 @@ app.use((req, res, next) => { // 404처리 미들웨어
 app.use((err, req, res, next) => { // 에러처리 미들웨어(반드시 변수 4개!!!)
     console.error(err);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.end('에러났지롱~ 근데 안알려줄거라룽~')
+    res.status(200).end('에러났지롱~ 근데 안알려줄거라룽~')
 });
 
 app.listen(app.get('port'), () => { // 실제로 포트를 열어서 서버 시작
