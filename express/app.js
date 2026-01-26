@@ -2,9 +2,9 @@
 
 const express = require('express');
 const path = require('path');
-const morgan = require('morgan'); // 요청과 응답을 기록
-const cookieParser = require('cookie-parser');
-
+const morgan = require('morgan'); // 서버로 들어온 요청과 응답을 기록
+const cookieParser = require('cookie-parser'); // 요청 헤더의 쿠키를 해석
+const session = require('express-session'); // 세션 관리용 미들웨어
 const app = express();
 
 app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
@@ -12,8 +12,26 @@ app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
 // process.env.PORT || 3000 : 값 역할
 // process.env.PORT : 서버 환경에서 미리 정해준 포트 번호
 
+// 미들웨어 간에 순서 중요
 app.use(morgan('combined')); // dev보다 더 자세한 기록을 보여줌
-app.use(cookieParser('hyeonjiSim')); // 알아서 cookie를 파싱해줌(괄호에는 암호삽입)
+app.use('/', express.static(path.join(__dirname, 'public'))); // 정적 파일 전용 미들웨어
+app.use(cookieParser('hyeonjiPassword')); // 알아서 cookie를 파싱해줌(괄호에는 암호삽입)
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: hyeonjiPassword,
+    cookie: {
+        httpOnly: true
+    },
+    name: 'connect.sid'
+}));
+app.use('/', (req, res, next) => { // 미들웨어 확장
+    if (req.session.id) {
+        express.static(path.join(__dirname, 'public'))(req, res, next)
+    } else { // 다음 미들웨어로 넘어가기
+        next();
+    }
+});
 app.use(express.json()); // JSON 요청 바디 파싱
 app.use(express.urlencoded({ extended: true })); // HTML form 전송 데이터 파싱(파일이나 이미지 X)
 
