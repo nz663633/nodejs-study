@@ -1,4 +1,6 @@
 // 개발 환경에서는 주로 nodemon으로 서버 실행
+const dotenv = require('dotenv'); // .env 파일에서 비밀키 관리
+dotenv.config(); // 최대한 위쪽에서 dotenv 불러오기
 
 const express = require('express');
 const path = require('path');
@@ -17,11 +19,11 @@ app.use(morgan('combined')); // dev보다 더 자세한 기록을 보여줌
 app.use('/', express.static(path.join(__dirname, 'public'))); // 정적 파일 전용 미들웨어
 app.use(express.json()); // JSON 요청 바디 파싱
 app.use(express.urlencoded({ extended: true })); // HTML form 전송 데이터 파싱(파일이나 이미지 X)
-app.use(cookieParser('hyeonjiPassword')); // 알아서 cookie를 파싱해줌(괄호에는 암호삽입)
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: hyeonjiPassword,
+    secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true
     },
