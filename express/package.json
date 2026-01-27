@@ -11,6 +11,7 @@
         "cookie-parser": "^1.4.7",
         "express": "5.2.1",
         "express-session": "^1.19.0",
-        "morgan": "^1.10.1"
+        "morgan": "^1.10.1",
+        "multer": "^2.0.2"
     }
 }

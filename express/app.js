@@ -15,6 +15,8 @@ app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
 // 미들웨어 간에 순서 중요
 app.use(morgan('combined')); // dev보다 더 자세한 기록을 보여줌
 app.use('/', express.static(path.join(__dirname, 'public'))); // 정적 파일 전용 미들웨어
+app.use(express.json()); // JSON 요청 바디 파싱
+app.use(express.urlencoded({ extended: true })); // HTML form 전송 데이터 파싱(파일이나 이미지 X)
 app.use(cookieParser('hyeonjiPassword')); // 알아서 cookie를 파싱해줌(괄호에는 암호삽입)
 app.use(session({
     resave: false,
@@ -32,18 +34,38 @@ app.use('/', (req, res, next) => { // 미들웨어 확장
         next();
     }
 });
-app.use(express.json()); // JSON 요청 바디 파싱
-app.use(express.urlencoded({ extended: true })); // HTML form 전송 데이터 파싱(파일이나 이미지 X)
 
-app.use('/', (req, res, next) => { // 미들웨어(요청과 응답 사이에서 공통 로직 처리)
-    console.log('모든 요청에 실행하고 싶어요!');
-    next(); // 다음 미들웨어 또는 라우트 핸들러로 요청을 넘김, 호출하지 않으면 응답 안 넘어감
-}, (req, res, next) => {
-    try {
-        console.log(asdfkldsaP); // undefined(에러)
-    } catch (error) { // 에러처리 미들웨어로 바로 이동
-        next(error); // 남은 일반 미들웨어, 라우트 전부 건너뜀
-    }
+const multer = require('multer');
+const fs = require('fs');
+
+// 서버 시작 전에 Sync 사용가능
+try { // uploads 폴더 유무 확인
+    fs.readdirSync('uploads');
+} catch (error) { // 없으면 직접 생성(multer는 폴더를 자동으로 만들어주지 않기 때문)
+    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+    fs.mkdirSync('uploads');
+}
+
+const upload = multer({ // 어디에 어떻게 어떤 이름으로 저장할지 정하는 함수
+    storage: multer.diskStorage({ // 파일을 서버 디스크에 저장
+        destination(req, file, done) {
+            done(null, 'uploads/'); // done(에러, 경로) -> 에러는 없으니깐 null
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname); // 파일의 확장자 추출
+            done(null, path.basename(file.originalname, ext) + Date.now() + ext); // 원래 이름 + 현재 시간 -> 파일명 중복 방지
+        },
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 최대 파일 크기 5MB(초과시 자동으로 에러 발생)
+});
+
+app.get('/upload', (req, res) => {
+    res.sendFile(path.join(__dirname, 'multipart.html'));
+});
+app.post('/upload', upload.single('image'), (req, res) => { // name="image"인 파일 1개 처리
+    console.log(req.file); // multer가 처리한 image 파일의 정보 객체가 req.file에 들어있음
+    console.log(req.body.title); // form에서 보낸 title을 req.body.title에 저장
+    res.send('ok');
 });
 
 app.get('/', (req, res) => {
