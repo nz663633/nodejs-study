@@ -18,8 +18,12 @@ app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
 // process.env.PORT || 3000 : 값 역할
 // process.env.PORT : 서버 환경에서 미리 정해준 포트 번호
 
-app.set('views', path.join(__dirname, 'views')); // pug 파일들의 위치 설정
-app.set('view engine', 'pug'); // 템플릿 엔진으로 pug를 사용하겠음
+app.set('view engine', 'html');
+
+nunjucks.configure('views', { // views 폴더가 nunjucks 파일들의 위치
+    express: app,
+    watch: true,
+});
 
 // 미들웨어 간에 순서 중요
 app.use(morgan('combined')); // dev보다 더 자세한 기록을 보여줌
