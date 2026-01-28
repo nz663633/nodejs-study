@@ -1,12 +1,16 @@
 // 개발 환경에서는 주로 nodemon으로 서버 실행
-const dotenv = require('dotenv'); // .env 파일에서 비밀키 관리
-dotenv.config(); // 최대한 위쪽에서 dotenv 불러오기
 
 const express = require('express');
-const path = require('path');
 const morgan = require('morgan'); // 서버로 들어온 요청과 응답을 기록
 const cookieParser = require('cookie-parser'); // 요청 헤더의 쿠키를 해석
 const session = require('express-session'); // 세션 관리용 미들웨어
+const dotenv = require('dotenv'); // .env 파일에서 비밀키 관리
+const path = require('path');
+
+dotenv.config(); // 최대한 위쪽에서 dotenv 불러오기
+const indexRouter = require('./routes');
+const userRouter = require('./routes/user');
+
 const app = express();
 
 app.set('port', process.env.PORT || 3000); // 전역변수처럼 접근 가능
@@ -27,8 +31,12 @@ app.use(session({
     cookie: {
         httpOnly: true
     },
-    name: 'connect.sid'
+    name: 'session-cookie'
 }));
+
+app.use('/', indexRouter);
+app.use('/user', userRouter);
+
 app.use('/', (req, res, next) => { // 미들웨어 확장
     if (req.session.id) {
         express.static(path.join(__dirname, 'public'))(req, res, next)
