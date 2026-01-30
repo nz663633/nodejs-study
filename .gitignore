@@ -1,3 +1,4 @@
 node_basic/big*.txt
 express/node_modules/
 express/.env
+MySQL/node_modules
