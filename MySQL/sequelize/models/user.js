@@ -38,7 +38,7 @@ class User extends Sequelize.Model {
         });
     }
 
-    static associate(db) { // User 한 명은 Comment 여러 개를 가진다.
+    static associate(db) { // User 한 명은 Comment 여러 개를 가진다.(1대다 관계)
         db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
     }
 };
