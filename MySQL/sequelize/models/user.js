@@ -33,7 +33,7 @@ class User extends Sequelize.Model {
             paranoid: false,
             modelName: 'User', // 자바스크립트에서 쓰는 모델명
             tableName: 'users', // 실제 SQL에서 쓰는 테이블명
-            charset: 'utf8',
+            charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
