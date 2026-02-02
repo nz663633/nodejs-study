@@ -5,7 +5,7 @@ const Comment = require('../models/comment');
 const router = express.Router();
 
 router.route('/')
-  .get(async (req, res, next) => {
+  .get(async (req, res, next) => { // 가져오기
     try {
       const users = await User.findAll();
       res.json(users);
@@ -14,7 +14,7 @@ router.route('/')
       next(err);
     }
   })
-  .post(async (req, res, next) => {
+  .post(async (req, res, next) => { // 등록하기
     try {
       const user = await User.create({
         name: req.body.name,
@@ -29,7 +29,7 @@ router.route('/')
     }
   });
 
-router.get('/:id/comments', async (req, res, next) => {
+router.get('/:id/comments', async (req, res, next) => { // ex. id가 2인 사람의 댓글 가져오기
   try {
     const comments = await Comment.findAll({
       include: {
