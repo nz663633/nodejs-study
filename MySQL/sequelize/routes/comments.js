@@ -41,4 +41,17 @@ router.route('/:id')
     }
   });
 
+  // 특정 사용자 댓글 불러오기
+router.get('/:id', async (req, res, next) => {
+  try {
+    const comments = await Comment.findAll({
+      where: { commenter: req.params.id },
+    });
+    res.json(comments);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 module.exports = router;
