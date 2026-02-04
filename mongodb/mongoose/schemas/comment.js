@@ -4,9 +4,9 @@ const { Schema } = mongoose;
 const { Types: { ObjectId } } = Schema;
 const commentSchema = new Schema({
   commenter: {
-    type: ObjectId,
+    type: ObjectId, // ref 컬렉션의 ObjectId(= user.js)
     required: true,
-    ref: 'User',
+    ref: 'User', // user schema의 _id를 가리킴(몽구스의 기능, MySQL의 join과 같은 기능)
   },
   comment: {
     type: String,
