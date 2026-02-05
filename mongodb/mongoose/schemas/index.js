@@ -5,8 +5,7 @@ const connect = () => { // 몽구스 연결
     mongoose.set('debug', true);
   }
   mongoose.connect('mongodb://root:jwhjforever209!@localhost:27017/admin', {
-    dbName: 'nodejs',
-    useNewUrlParser: true,
+    dbName: 'nodejs'
   }).then(() => {
     console.log("몽고디비 연결 성공");
   }).catch((err) => {

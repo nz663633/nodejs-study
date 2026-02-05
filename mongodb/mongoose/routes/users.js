@@ -29,7 +29,7 @@ router.route('/')
     }
   });
 
-router.get('/:id/comments', async (req, res, next) => {
+router.get('/:id/comments', async (req, res, next) => { // ObjectId에 맞는 사용자의 댓글 가져오기
   try {
     const comments = await Comment.find({ commenter: req.params.id })
       .populate('commenter');
@@ -42,3 +42,5 @@ router.get('/:id/comments', async (req, res, next) => {
 });
 
 module.exports = router;
+
+// populate: ObjectId를 자동으로 실제 객체로 바꿔줌

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/', async (req, res, next) => {
   try {
-    const comment = await Comment.create({
+    const comment = await Comment.create({ // 새로운 댓글 등록하기
       commenter: req.body.id,
       comment: req.body.comment,
     });
