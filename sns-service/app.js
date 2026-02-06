@@ -5,6 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
+const { sequelize } = require('./models'); // db 객체 안에 있는 sequelize 연결
 
 dotenv.config(); // .env 파일을 읽어서 process.env에 로드
 // process.env.COOKIE_SECRET 있음, 사용가능(윗줄에서 불러옴)
@@ -14,13 +15,21 @@ const { watch } = require('fs');
 const app = express();
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
-nunjucks.configure('views', {
+nunjucks.configure('views', { // nunjucks 템플릿 엔진 설정(views 폴더 사용, 변경 실시간 감지)
     express: app,
     watch: true,
 });
 
+sequelize.sync() // 시퀄라이즈 모델을 db 테이블과 동기화
+    .then(() => {
+        console.log('데이터베이스 연결 성공')
+    })
+    .catch((err) => {
+        console.error(err);
+    })
+
 app.use(morgan('dev')); // 로깅(dev는 개발모드)
-app.use(express.static(path.join(__dirname, 'public'))); // 프론트에서 public 폴더를 자유롭게 사용하도록 허용
+app.use(express.static(path.join(__dirname, 'public'))); // 프론트에서 public 폴더를 자유롭게 사용하도록 허용(정적 파일 제공 css, js, 이미지...)
 app.use(express.json()); // json 요청 받을 수 있도록 함
 app.use(express.urlencoded({ extended: false })); // 폼 요청 받을 수 있도록 함
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -41,7 +50,7 @@ app.use((req, res, next) => { // 404 NOT FOUND
     next(error);
 });
 app.use((err, req, res, next) => {
-    req.locals.message = err.message;
+    res.locals.message = err.message;
     res.locals.error = process.env.NODE_ENV !== 'production' ? err: {}; // 개발모드일 경우만 에러 로그를 표시함
     res.status(err.status || 500);
     res.render('error'); // error.html
