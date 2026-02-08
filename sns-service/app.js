@@ -49,6 +49,7 @@ app.use(session({
 // passport 미들웨어는 항상 express session 미들웨어 바로 아래에 넣어준다
 app.use(passport.initialize()); // req.user, req.login, req.isAuthenticate, req.logout 생성
 app.use(passport.session()); // connect.id라는 이름으로 세션 쿠키가 브라우저로 전송
+// 브라우저에 connect.sid=123123923948 세션 쿠키 전송
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
