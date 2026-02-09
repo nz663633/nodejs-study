@@ -15,4 +15,5 @@ module.exports = () => { // passport 설정
     });
 
     local(); // localStrategy 호출
+    kakao(); // kakaoStrategy 호출
 }
