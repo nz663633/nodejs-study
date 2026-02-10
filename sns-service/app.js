@@ -12,6 +12,7 @@ dotenv.config(); // .env 파일을 읽어서 process.env에 로드
 // process.env.COOKIE_SECRET 있음, 사용가능(윗줄에서 불러옴)
 const pageRouter = require('./routes/page'); // 페이지 불러오기
 const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const passportConfig = require('./passport');
 const { watch } = require('fs');
 
@@ -34,6 +35,7 @@ sequelize.sync() // 시퀄라이즈 모델을 db 테이블과 동기화
 
 app.use(morgan('dev')); // 로깅(dev는 개발모드)
 app.use(express.static(path.join(__dirname, 'public'))); // 프론트에서 public 폴더를 자유롭게 사용하도록 허용(정적 파일 제공 css, js, 이미지...)
+app.use('/img', express.static(path.join(__dirname, 'uploads'))); // 프론트에서 public 폴더를 자유롭게 사용하도록 허용(정적 파일 제공 css, js, 이미지...)
 app.use(express.json()); // req.body를 ajax json 요청 받을 수 있도록 함
 app.use(express.urlencoded({ extended: false })); // req.body 생성, req.body 폼 요청 받을 수 있도록 함
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -53,6 +55,7 @@ app.use(passport.session()); // connect.id라는 이름으로 세션 쿠키가 �
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 app.use((req, res, next) => { // 404 NOT FOUND
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
