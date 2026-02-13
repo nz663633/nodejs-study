@@ -13,6 +13,7 @@ dotenv.config(); // .env 파일을 읽어서 process.env에 로드
 const pageRouter = require('./routes/page'); // 페이지 불러오기
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 const passportConfig = require('./passport');
 const { watch } = require('fs');
 
@@ -56,6 +57,7 @@ app.use(passport.session()); // connect.id라는 이름으로 세션 쿠키가 �
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/post', postRouter);
+app.use('/user', userRouter);
 
 app.use((req, res, next) => { // 404 NOT FOUND
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
