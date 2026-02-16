@@ -1,0 +1,25 @@
+{
+  "name": "nodecat",
+  "version": "0.0.1",
+  "description": "NodeBird 2차 서비스",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "keywords": [],
+  "author": "Hyeonji Sim",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "morgan": "^1.10.1",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
