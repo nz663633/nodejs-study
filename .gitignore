@@ -2,3 +2,5 @@ node_basic/big*.txt
 express/node_modules/
 express/.env
 MySQL/node_modules
+sns-service-api/node_modules
+sns-service-api/.env
