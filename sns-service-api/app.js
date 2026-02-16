@@ -12,6 +12,7 @@ dotenv.config(); // .env 파일을 읽어서 process.env에 로드
 // process.env.COOKIE_SECRET 있음, 사용가능(윗줄에서 불러옴)
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes');
+const v1Router = require('./routes/v1');
 const passportConfig = require('./passport');
 const { watch } = require('fs');
 
@@ -53,6 +54,7 @@ app.use(passport.session()); // connect.id라는 이름으로 세션 쿠키가 �
 
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
+app.use('/v1',v1Router);
 
 app.use((req, res, next) => { // 404 NOT FOUND
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
