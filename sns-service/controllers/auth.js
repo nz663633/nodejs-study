@@ -18,7 +18,7 @@ exports.join = async (req, res, next) => {
         return res.redirect('/'); // 302
     } catch (error) {
         console.error(error);
-        next(error);
+        return next(error);
     }
 }
 
@@ -27,10 +27,10 @@ exports.login = (req, res, next) => {
     passport.authenticate('local', (authError, user, info) => { // localStrategy에서 done이 실행됐을 때
         if (authError) { // 서버실패
             console.error(authError);
-            next(authError);
+            return next(authError);
         }
         if (!user) { // 로직실패
-            return res.redirect(`/?loginError=${info.message}`);
+            return res.redirect(`/?error=${info.message}`);
         }
         return req.login(user, (loginError) => { // 로그인 성공
             if(loginError) {
